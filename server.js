@@ -12,11 +12,10 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// 프롬프트 파일 읽기
-const systemPrompt = fs.readFileSync("prompt.txt", "utf-8");
+const systemPrompt = fs.readFileSync("./prompt.txt", "utf-8");
 
 app.get("/", (req, res) => {
-  res.send("챗봇 서버 실행중");
+  res.send("디지털 법당 챗봇 서버 실행중 🙏");
 });
 
 app.post("/chat", async (req, res) => {
@@ -31,17 +30,17 @@ app.post("/chat", async (req, res) => {
       model: "gpt-4o-mini",
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: userMessage },
-      ],
+        { role: "user", content: userMessage }
+      ]
     });
 
     res.json({
-      reply: response.choices[0].message.content,
+      reply: response.choices[0].message.content
     });
 
   } catch (error) {
-    console.error("에러 발생:", error);
-    res.status(500).json({ error: "서버 오류 발생" });
+    console.error("서버 에러:", error);
+    res.status(500).json({ error: "서버 내부 오류" });
   }
 });
 
