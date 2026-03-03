@@ -1,35 +1,34 @@
 import express from "express";
-import dotenv from "dotenv";
-import OpenAI from "openai";
+import cors from "cors";
 import fs from "fs";
-
-dotenv.config();
+import OpenAI from "openai";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const systemPrompt = fs.readFileSync("./prompt.txt", "utf-8");
+// 프롬프트 읽기
+const SYSTEM_PROMPT = fs.readFileSync("./prompt.txt", "utf8");
 
-app.get("/", (req, res) => {
-  res.send("디지털 법당 챗봇 서버 실행중 🙏");
-});
+// 🔹 채팅 UI 페이지 열기
+app.get("/", (req, res) => res.sendFile("index.html", { root: "." }));
 
+// 🔹 API 엔드포인트
 app.post("/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
-
     if (!userMessage) {
-      return res.status(400).json({ error: "message가 필요합니다." });
+      return res.status(400).json({ error: "메시지가 없습니다." });
     }
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: systemPrompt },
+        { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userMessage }
       ]
     });
@@ -39,12 +38,15 @@ app.post("/chat", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("서버 에러:", error);
-    res.status(500).json({ error: "서버 내부 오류" });
+    console.error(error);
+    res.status(500).json({
+      error: "서버 내부 오류",
+      detail: error.message
+    });
   }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`서버 실행 중: ${PORT}`);
+  console.log(`서버 실행중 ${PORT}`);
 });
