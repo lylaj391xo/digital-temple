@@ -1,92 +1,314 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>디지털 법당</title>
+  <title>Hyemyung — Spiritual Sanctuary</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Serif+KR:wght@300;400&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1714;
+      --ink-soft: #4a4540;
+      --ink-faint: #8a837a;
+      --paper: #faf8f4;
+      --paper-warm: #f3efe8;
+      --paper-border: rgba(90,80,60,0.15);
+      --gold: #b89a5a;
+      --gold-light: #d4b87a;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'EB Garamond', Georgia, serif;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      align-items: center;
+      min-height: 100vh;
     }
-    #chat {
+
+    header {
+      width: 100%;
+      max-width: 680px;
+      padding: 2.5rem 1.5rem 1.5rem;
+      text-align: center;
+      border-bottom: 0.5px solid var(--paper-border);
+    }
+
+    .ornament {
+      display: block;
+      width: 1px;
+      height: 32px;
+      background: var(--gold);
+      margin: 0 auto 1.25rem;
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 13px;
+      color: var(--ink-faint);
+      letter-spacing: 0.08em;
+      font-style: italic;
+    }
+
+    #chat-container {
+      width: 100%;
+      max-width: 680px;
       flex: 1;
-      padding: 10px;
       overflow-y: auto;
-      background: #f5f5f5;
-    }
-    .msg {
-      margin: 8px 0;
-      padding: 10px;
-      border-radius: 10px;
-      max-width: 80%;
-    }
-    .user {
-      background: #d1e7ff;
-      align-self: flex-end;
-    }
-    .bot {
-      background: #ffffff;
-      border: 1px solid #ddd;
-      align-self: flex-start;
-    }
-    #inputArea {
+      padding: 2rem 1.5rem;
       display: flex;
-      padding: 10px;
-      border-top: 1px solid #ccc;
+      flex-direction: column;
+      gap: 1.5rem;
     }
-    input {
+
+    .msg {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .msg.user { align-items: flex-end; }
+    .msg.bot  { align-items: flex-start; }
+
+    .msg-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+    }
+
+    .bubble {
+      max-width: 85%;
+      padding: 14px 18px;
+      font-size: 16px;
+      line-height: 1.8;
+      border-radius: 2px;
+    }
+
+    .msg.user .bubble {
+      background: var(--paper-warm);
+      border: 0.5px solid var(--paper-border);
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    .msg.bot .bubble {
+      background: white;
+      border: 0.5px solid var(--paper-border);
+      border-left: 2px solid var(--gold);
+      color: var(--ink);
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 5px;
+      padding: 4px 0;
+      align-items: center;
+    }
+
+    .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: pulse 1.4s infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulse {
+      0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1); }
+    }
+
+    footer {
+      width: 100%;
+      max-width: 680px;
+      padding: 1rem 1.5rem 2rem;
+      border-top: 0.5px solid var(--paper-border);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    textarea {
       flex: 1;
-      padding: 10px;
-      font-size: 16px;
+      padding: 12px 14px;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 15px;
+      line-height: 1.6;
+      border: 0.5px solid var(--paper-border);
+      border-radius: 2px;
+      background: white;
+      color: var(--ink);
+      resize: none;
+      min-height: 48px;
+      max-height: 140px;
+      outline: none;
+      transition: border-color 0.2s;
     }
-    button {
-      padding: 10px;
-      font-size: 16px;
+
+    textarea:focus {
+      border-color: var(--gold);
+    }
+
+    textarea::placeholder {
+      color: var(--ink-faint);
+      font-style: italic;
+    }
+
+    button#send {
+      padding: 12px 20px;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      border-radius: 2px;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    button#send:hover { background: var(--ink-soft); }
+    button#send:disabled { background: var(--ink-faint); cursor: not-allowed; }
+
+    .footer-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--ink-faint);
+      text-align: center;
+      letter-spacing: 0.06em;
+      font-style: italic;
+    }
+
+    @media (max-width: 480px) {
+      header { padding: 2rem 1rem 1rem; }
+      #chat-container { padding: 1.5rem 1rem; }
+      footer { padding: 1rem 1rem 1.5rem; }
+      .bubble { max-width: 95%; font-size: 15px; }
     }
   </style>
 </head>
 <body>
-  <div id="chat"></div>
-  <div id="inputArea">
-    <input id="message" placeholder="질문을 입력하세요..." />
-    <button onclick="sendMessage()">전송</button>
+
+<header>
+  <span class="ornament"></span>
+  <h1>Hyemyung</h1>
+  <p>A sanctuary for the inner road</p>
+</header>
+
+<div id="chat-container">
+  <div class="msg bot">
+    <span class="msg-label">Hyemyung</span>
+    <div class="bubble">
+      Welcome. I am Hyemyung.<br><br>
+      You have found your way here — and in the old traditions, that itself is considered the first step of the journey.<br><br>
+      There is no urgency here. No performance required.<br><br>
+      Sit with me a while. Tell me what is weighing on your mind, or simply rest in the stillness. Both are welcome.
+    </div>
   </div>
+</div>
 
-  <script>
-    async function sendMessage() {
-      const input = document.getElementById("message");
-      const chat = document.getElementById("chat");
-      const text = input.value.trim();
-      if (!text) return;
+<footer>
+  <div class="input-row">
+    <textarea id="message" placeholder="Speak freely..." rows="1"></textarea>
+    <button id="send" onclick="sendMessage()">Send</button>
+  </div>
+  <p class="footer-note">Hyemyung offers reflection, not answers. For crisis support, please reach out to a professional.</p>
+</footer>
 
-      const userDiv = document.createElement("div");
-      userDiv.className = "msg user";
-      userDiv.innerText = text;
-      chat.appendChild(userDiv);
+<script>
+  const textarea = document.getElementById('message');
+  const sendBtn = document.getElementById('send');
+  const chat = document.getElementById('chat-container');
 
-      input.value = "";
+  textarea.addEventListener('input', () => {
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.min(textarea.scrollHeight, 140) + 'px';
+  });
 
-      const response = await fetch("/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+  textarea.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  async function sendMessage() {
+    const text = textarea.value.trim();
+    if (!text || sendBtn.disabled) return;
+
+    addMsg('user', text);
+    textarea.value = '';
+    textarea.style.height = 'auto';
+    sendBtn.disabled = true;
+
+    const typingEl = addTyping();
+
+    try {
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text })
       });
-
-      const data = await response.json();
-
-      const botDiv = document.createElement("div");
-      botDiv.className = "msg bot";
-      botDiv.innerText = data.reply;
-      chat.appendChild(botDiv);
-
-      chat.scrollTop = chat.scrollHeight;
+      const data = await res.json();
+      typingEl.remove();
+      addMsg('bot', data.reply || 'Something went still. Please try again.');
+    } catch (e) {
+      typingEl.remove();
+      addMsg('bot', 'The connection was lost. Please try again.');
     }
-  </script>
+
+    sendBtn.disabled = false;
+    textarea.focus();
+  }
+
+  function addMsg(role, text) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + role;
+
+    const label = document.createElement('span');
+    label.className = 'msg-label';
+    label.textContent = role === 'user' ? 'You' : 'Hyemyung';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+
+    div.appendChild(label);
+    div.appendChild(bubble);
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    return div;
+  }
+
+  function addTyping() {
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.innerHTML = '<span class="msg-label">Hyemyung</span><div class="bubble"><div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    return div;
+  }
+</script>
+
 </body>
 </html>
